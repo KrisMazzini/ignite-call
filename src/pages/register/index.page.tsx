@@ -1,4 +1,5 @@
 import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react'
+import { AxiosError } from 'axios'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -7,6 +8,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 import { Container, Form, FormError, Header } from './styles'
+import { api } from '@/lib/axios'
 
 const registerFormSchema = z.object({
   username: z
@@ -33,7 +35,20 @@ export default function Register() {
   const router = useRouter()
 
   async function handleRegister(data: RegisterFormData) {
-    console.log(data)
+    try {
+      await api.post('/users', {
+        name: data.name,
+        username: data.username,
+      })
+
+      await router.push('/register/connect-calendar')
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        alert(error.response.data.message)
+      }
+
+      console.error(error)
+    }
   }
 
   useEffect(() => {
