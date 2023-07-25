@@ -67,8 +67,6 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
         },
       })
 
-      console.log(response.data)
-
       return response.data
     },
   )
